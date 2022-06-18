@@ -1,10 +1,14 @@
-describe('E-commerce shopping workflow automation', () => {
-  const username = 'testemail@fusemachinestest.com'
-  const password = '123456789'
-  const product_name = 'Dress'
+before(function(){
+  cy.fixture('user_info').then(function(userinfo){
+    this.userinfo = userinfo
+  })
+})
 
 
-  it('Opens the application', () => {
+describe('E-commerce shopping workflow automation', function() {
+
+
+  it('Opens the application', function() {
     cy.visit('http://automationpractice.com/index.php')
     
     //assertions for not-logged-in state
