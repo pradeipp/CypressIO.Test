@@ -23,3 +23,14 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+
+Cypress.Commands.add('assertFormOk', {prevSubject : 'element'}, (subject) => {
+    cy.get(subject.selector).focused().blur()
+    cy.get(subject.selector).parent().should('have.class', 'form-ok')
+})
+
+Cypress.Commands.add('assertFormError', {prevSubject : 'element'}, (subject) => {
+    cy.get(subject.selector).focused().blur()
+    cy.get(subject.selector).parent().should('have.class', 'form-error')
+})
