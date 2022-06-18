@@ -24,8 +24,7 @@ describe('E-commerce shopping workflow automation', function() {
                                    .and('contain', 'Sign in')
   })
 
-  
-  it('Logs in', ()=> {
+  it('Begins Create account process', function() {
     cy.get('.login').click()
 
     //assertions for login page
@@ -34,12 +33,49 @@ describe('E-commerce shopping workflow automation', function() {
     cy.get('#login_form').should('be.visible')
                          .and('contain', 'Already registered?')
 
-    //login form fillup with assertions in between 
-    cy.get('#email').type(username)
-    cy.get('#login_form h3').click()
-    cy.get('input#email').parent().should('have.class', 'form-ok')
+
+    //for email account text field inside create account section
+    cy.get('#email_create').type('83459').assertFormError()
+    cy.get('#email_create').type(this.userinfo.email).assertFormOk()
+
+    cy.get('#SubmitCreate').click()
+    cy.get('#account-creation_form').should('be.visible')
+  })
+
+  it('Performs new account creation', function(){
+    if(this.user_info.gender == "male"){  
+      cy.get('#id_gender1').click()
+    }else{
+      cy.get('#id_gender2').click()
+    }
+
+    cy.get('#customer_firstname').type(this.user_info.fname)
+    cy.get('#customer_lastname').type(this.user_info.lname)
+    cy.get('#email').type(this.user_info.email)
+    cy.get('#passwd').type(this.user_info.upw)
+
+    cy.get('#firstname').should('have.value', this.user_info.fname)
+    cy.get('#lastname').should('have.value', this.user_info.lname)
     
-    cy.get('input#passwd').type(password)
+    cy.get('#address1').type(this.user_info.address)
+    cy.get('#city').type(this.user_info.city)
+    cy.get('#id_state').select(this.user_info.state)
+    cy.get('#postcode').type(this.user_info.postcode)
+    cy.get('#id_country').select(this.user_info.country)
+    cy.get('#phone_mobile').type(this.user_info.mobile_no)
+
+    cy.get('#submitAccount').click()
+
+  })
+
+
+  it('Logs in', ()=> {
+    cy.get('.login').click()
+
+    //login form fillup with assertions in between 
+    cy.get('#email').type(username).assertFormOk()
+    
+    cy.get('input#passwd').type(password).assertFormOk()
     //form.submit() method didn't log in so using the submit_button.click() method instead
     cy.get('form#login_form #SubmitLogin').click()
 
