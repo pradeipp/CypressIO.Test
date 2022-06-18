@@ -6,8 +6,6 @@ before(function(){
 
 
 describe('E-commerce shopping workflow automation', function() {
-
-
   it('Opens the application', function() {
     cy.visit('http://automationpractice.com/index.php')
     
@@ -36,10 +34,10 @@ describe('E-commerce shopping workflow automation', function() {
 
     //for email account text field inside create account section
     cy.get('#email_create').type('83459').assertFormError()
-    cy.get('#email_create').type(this.userinfo.email).assertFormOk()
+    cy.get('#email_create').clear().type(this.userinfo.email).assertFormOk()
 
     cy.get('#SubmitCreate').click()
-    cy.get('#account-creation_form').should('be.visible')
+    cy.get('#account-creation_form', {timeout:15000}).should('be.visible')
   })
 
   it('Performs new account creation', function(){
@@ -65,6 +63,7 @@ describe('E-commerce shopping workflow automation', function() {
     cy.get('#phone_mobile').type(this.userinfo.mobile_no)
 
     cy.get('#submitAccount').click()
+    cy.get('.logout').click()
 
   })
 
