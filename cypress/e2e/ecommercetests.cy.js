@@ -43,39 +43,39 @@ describe('E-commerce shopping workflow automation', function() {
   })
 
   it('Performs new account creation', function(){
-    if(this.user_info.gender == "male"){  
+    if(this.userinfo.gender == "male"){  
       cy.get('#id_gender1').click()
     }else{
       cy.get('#id_gender2').click()
     }
 
-    cy.get('#customer_firstname').type(this.user_info.fname)
-    cy.get('#customer_lastname').type(this.user_info.lname)
-    cy.get('#email').type(this.user_info.email)
-    cy.get('#passwd').type(this.user_info.upw)
+    cy.get('#customer_firstname').type(this.userinfo.fname).assertFormOk()
+    cy.get('#customer_lastname').type(this.userinfo.lname).assertFormOk()
+    cy.get('#email').click().assertFormOk()
+    cy.get('#passwd').type(this.userinfo.upw).assertFormOk()
 
-    cy.get('#firstname').should('have.value', this.user_info.fname)
-    cy.get('#lastname').should('have.value', this.user_info.lname)
+    cy.get('#firstname').should('have.value', this.userinfo.fname)
+    cy.get('#lastname').should('have.value', this.userinfo.lname)
     
-    cy.get('#address1').type(this.user_info.address)
-    cy.get('#city').type(this.user_info.city)
-    cy.get('#id_state').select(this.user_info.state)
-    cy.get('#postcode').type(this.user_info.postcode)
-    cy.get('#id_country').select(this.user_info.country)
-    cy.get('#phone_mobile').type(this.user_info.mobile_no)
+    cy.get('#address1').type(this.userinfo.address)
+    cy.get('#city').type(this.userinfo.city)
+    cy.get('#id_state').select(this.userinfo.state)
+    cy.get('#postcode').type(this.userinfo.postcode)
+    cy.get('#id_country').select(this.userinfo.country)
+    cy.get('#phone_mobile').type(this.userinfo.mobile_no)
 
     cy.get('#submitAccount').click()
 
   })
 
 
-  it('Logs in', ()=> {
+  it('Logs in', function() {
     cy.get('.login').click()
 
     //login form fillup with assertions in between 
-    cy.get('#email').type(username).assertFormOk()
+    cy.get('#email').type(this.userinfo.workingemail).assertFormOk()
     
-    cy.get('input#passwd').type(password).assertFormOk()
+    cy.get('input#passwd').type(this.userinfo.workingupw).assertFormOk()
     //form.submit() method didn't log in so using the submit_button.click() method instead
     cy.get('form#login_form #SubmitLogin').click()
 
@@ -86,8 +86,8 @@ describe('E-commerce shopping workflow automation', function() {
   })
 
 
-  it('Searches for a product and adds an item to cart', () => {
-    cy.get('input#search_query_top').type("Dress").type('{enter}')
+  it('Searches for a product and adds an item to cart', function() {
+    cy.get('input#search_query_top').type(this.userinfo.product1).type('{enter}')
     // cy.get('[name=submit_search]').click()
 
     //at this point, the user gets logged out automatically after submitting the search query.
@@ -96,7 +96,7 @@ describe('E-commerce shopping workflow automation', function() {
 
     //assertion after search results are loaded
     cy.get('.product-listing').should("be.visible")
-                               .and('contain', product_name)
+                               .and('contain', this.userinfo.product1)
                                .and('contain', 'results have been found.')
 
     cy.get('.quick-view-mobile').first().click()
