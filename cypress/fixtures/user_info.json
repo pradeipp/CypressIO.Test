@@ -2,7 +2,7 @@
     "fname" : "Krishna",
     "lname" : "Karki", 
     "gender" : "male",
-    "email" : "kkarki2@testemail.com", 
+    "email" : "kkarki4@testemail.com", 
     "upw" : "123456789",
     "address" : "Palo Alto, California",
     "city" : "Palo Alto", 
@@ -11,6 +11,6 @@
     "country" : "United States", 
     "mobile_no" : "8402598593",
     "product1" : "Dress",
-    "workingemail" : "testemail@fusemachinestest.com",
+    "workingemail" : "kkarki@testemail.com",
     "workingupw" : "123456789"
 }

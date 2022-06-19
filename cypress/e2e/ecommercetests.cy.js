@@ -22,25 +22,25 @@ describe('E-commerce shopping workflow automation', function() {
                                    .and('contain', 'Sign in')
   })
 
-  it('Begins Create account process', function() {
+  it('Creates a new account ', function() {
     cy.get('.login').click()
 
-    //assertions for login page
+    //assertions for login page opening
     cy.get('.home + .navigation-pipe + .navigation_page').should('be.visible')
                                                          .and('contain', 'Authentication')
     cy.get('#login_form').should('be.visible')
                          .and('contain', 'Already registered?')
 
 
-    //for email account text field inside create account section
+    //email account text field inside create account section
     cy.get('#email_create').type('83459').assertFormError()
     cy.get('#email_create').clear().type(this.userinfo.email).assertFormOk()
 
     cy.get('#SubmitCreate').click()
     cy.get('#account-creation_form', {timeout:15000}).should('be.visible')
-  })
+  
 
-  it('Performs new account creation', function(){
+    //Create New Account form fill-up
     if(this.userinfo.gender == "male"){  
       cy.get('#id_gender1').click()
     }else{
@@ -63,6 +63,11 @@ describe('E-commerce shopping workflow automation', function() {
     cy.get('#phone_mobile').type(this.userinfo.mobile_no)
 
     cy.get('#submitAccount').click()
+    cy.get('a.account span').should('contain', this.userinfo.fname + ' ' + this.userinfo.lname)
+    cy.get("p.info-account").should("be.visible")
+                            .and('contain', 'Welcome to your account.');
+
+    //logging out of the system
     cy.get('.logout').click()
 
   })
@@ -79,14 +84,15 @@ describe('E-commerce shopping workflow automation', function() {
     cy.get('form#login_form #SubmitLogin').click()
 
     //Assertions after user is logged in
-    cy.get('a.account span').should('contain', 'Test User')
+    cy.get('a.account span').should('contain', this.userinfo.fname + ' ' + this.userinfo.lname)
     cy.get("p.info-account").should("be.visible")
                             .and('contain', 'Welcome to your account.');
   })
 
 
   it('Searches for a product and adds an item to cart', function() {
-    cy.get('input#search_query_top').type(this.userinfo.product1).type('{enter}')
+    cy.get('input#search_query_top').type(this.userinfo.product1)
+    cy.get('#searchbox').submit()
     // cy.get('[name=submit_search]').click()
 
     //at this point, the user gets logged out automatically after submitting the search query.
