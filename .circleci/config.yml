@@ -1,0 +1,51 @@
+# This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
+version: 2.1
+
+# Orbs are reusable packages of CircleCI configuration that you may share across projects, enabling you to create encapsulated, parameterized commands, jobs, and executors that can be used across multiple projects.
+# See: https://circleci.com/docs/2.0/orb-intro/
+orbs:
+  node: circleci/node@4.7
+
+# Invoke jobs via workflows
+# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  deploy:
+    jobs: # This is the name of the workflow, feel free to change it to better match your workflow. #Inside the workflow, you define the jobs you want to run.
+      - run-e2e-test
+      
+jobs:
+  run-e2e-test:
+    docker: 
+      - image: reactnativecommunity/react-native-android
+    machine:
+      - test_machine
+    steps:
+    -  checkout
+    - run: export CMD_TOOLS=$ANDROID_HOME/cmdline-tools/latest/bin
+    - run: 
+        name: setup android 
+        command: 
+          echo y | $CMD_TOOLS/sdkmanager 'system-images;android-31;default;x86_64'
+          printf 'y\ny\ny\ny\ny\n' | $CMD_TOOLS/sdkmanager --licenses
+          echo n | $CMD_TOOLS/avdmanager create avd -n testavd -k "system-images;android-31;default;x86_64"
+          apt install -y libx11-6 libpulse0 libglu1 libnss3 libxcomposite1 libxcursor1 libxi6 libxtst6 libasound2
+    - run: 
+        name: setup javascript 
+        command: 
+          yarn config set cache-folder .yarn
+          cd mobile
+          yarn install --frozen-lockfile
+          cp "RELEASE_CHANNEL=test" .env
+          node tools/generate-dev-appjson.js
+          cp app.dev.json app.json
+          cp eas.dev.json eas.json
+    - run: 
+        name: build android 
+        command: 
+          npx expo prebuild
+          yarn test:android:build:release
+    - run: 
+        name: run test
+        command: 
+          adb start-server
+          yarn test:android:ci
